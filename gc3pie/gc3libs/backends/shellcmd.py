@@ -664,6 +664,10 @@ ReturnCode=%x"""
                 outcome = self._parse_wrapper_output(wrapper_file)
                 app.execution.returncode = \
                     Run.shellexit_to_returncode(int(outcome.ReturnCode))
+                # see e.g. the "SGE" backend code for more details (line ~420):
+                app.execution.max_used_memory = outcome.MaxResidentMemory
+                app.execution.duration = outcome.WallTime
+                app.execution.used_cpu_time = outcome.UserTime
                 self._delete_job_resource_file(pid)
             finally:
                 wrapper_file.close()
