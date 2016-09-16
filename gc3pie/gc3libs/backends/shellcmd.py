@@ -298,6 +298,11 @@ ReturnCode=%x"""
         self.transport.connect()
         exit_code, stdout, stderr = self.transport.execute_command(
             'kill %d' % pid)
+            # killing jobs is not working properly, see the issue on github:
+            # - https://github.com/uzh/gc3pie/issues/458
+            # possible workarounds might be something like:
+            # 'kill $(ps -o pid= -g $(ps -o sess= -p %d))' % pid)
+            # 'kill $(ps -ax -o sess=,pid= | egrep "^[ \t]*$(ps -p %d  -o sess=)[ \t]")' % pid)
         # XXX: should we check that the process actually died?
         if exit_code != 0:
             # Error killing the process. It may not exists or we don't
